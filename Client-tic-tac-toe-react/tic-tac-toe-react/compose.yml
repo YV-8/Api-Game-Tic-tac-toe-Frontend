@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:  
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: tic-tac-toe-dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    command: npm run dev
+    restart: unless-stopped
+  
+  prod:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tic-tac-toe-prod
+    ports:
+      - "8080:80"
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
