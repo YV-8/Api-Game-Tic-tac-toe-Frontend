@@ -1,93 +1,188 @@
-# GameClient
+# Tic Tac Toe - React
 
+A modern take on the classic Tic-Tac-Toe game. This project focuses on clean state management and an algorithmic approach to win-condition validation.
 
+## Features
 
-## Getting started
+- Local Multiplayer: Play with a partner in the same session.
+- Minimalist Design: Clean UI featuring a sleek Purple and Blue color palette.
+- Smooth Animations: Fluid transitions for an engaging user experience.
+- Magic Square Validation: High-performance win-condition logic using a 3x3 Magic Square algorithm.
+- Win Detection: Automatic identification and announcement of the winner.
+- Draw Detection: Intelligent logic to identify tie games instantly.
+- Session Analytics: Track real-time stats (matches played, wins, and draws).
+- Move History: Full log of every move made during the match.
+- Scalable Architecture: Codebase prepared for future remote/online multiplayer integration.
+- Responsive Design: Fully optimized for mobile, tablet, and desktop screens.
+- Ultra-fast Builds: Powered by Vite for a lightning-fast development experience.
+- Dockerized: Ready for consistent deployment using Docker containers.
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## Magic square
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
-
-## Add your files
-
-* [Create](https://docs.gitlab.com/user/project/repository/web_editor/#create-a-file) or [upload](https://docs.gitlab.com/user/project/repository/web_editor/#upload-a-file) files
-* [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
+A 3x3 Magic Square is a matrix where each position contains a unique number from 1 to 9, and the sum of every row, column, and diagonal is exactly 15.
 
 ```
-cd existing_repo
-git remote add origin https://gitlab.com/jala-university1/cohort-4/ES.CO.CSNT-245.GA.T1.26.M2/SO/gameclient.git
-git branch -M main
-git push -uf origin main
+2  7  6
+9  5  1
+4  3  8
 ```
 
-## Integrate with your tools
+## Installation and Usage
 
-* [Set up project integrations](https://gitlab.com/jala-university1/cohort-4/ES.CO.CSNT-245.GA.T1.26.M2/SO/gameclient/-/settings/integrations)
+### Option 1: Local Installation with npm
 
-## Collaborate with your team
+#### Pre-requisites
+- Node.js (v18+)
+- npm
 
-* [Invite team members and collaborators](https://docs.gitlab.com/user/project/members/)
-* [Create a new merge request](https://docs.gitlab.com/user/project/merge_requests/creating_merge_requests/)
-* [Automatically close issues from merge requests](https://docs.gitlab.com/user/project/issues/managing_issues/#closing-issues-automatically)
-* [Enable merge request approvals](https://docs.gitlab.com/user/project/merge_requests/approvals/)
-* [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
+#### Config steps
 
-## Test and Deploy
+1. Clone repository   
 
-Use the built-in continuous integration in GitLab.
+2. Install dependencies
+   ```bash
+   npm install
+   ```
 
-* [Get started with GitLab CI/CD](https://docs.gitlab.com/ci/quick_start/)
-* [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/user/application_security/sast/)
-* [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/topics/autodevops/requirements/)
-* [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/user/clusters/agent/)
-* [Set up protected environments](https://docs.gitlab.com/ci/environments/protected_environments/)
+#### Commands list
 
-***
+**Dev mode**:
+```bash
+npm run dev
+```
+Go to `http://localhost:3000`
 
-# Editing this README
+**Production build**:
+```bash
+npm run build
+```
+Production files will be generated in path `dist/`
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+**Production preview**:
+```bash
+npm run preview
+```
+### Opción 2: Docker
 
-## Suggestions for a good README
+#### Pre-requisites
+- Docker
+- Docker Compose (included in Docker)
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+#### With Docker Compose
 
-## Name
-Choose a self-explaining name for your project.
+**Dev mode**:
+```bash
+docker compose -f compose.yml up dev
+```
+Go to: `http://localhost:3000`
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+**Production**:
+```bash
+docker compose -f compose.yml up prod -d
+```
+Go to: `http://localhost:8080`
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+Stop:
+```bash
+docker compose -f compose.yml down
+```
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+#### Using docker
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+**Build & Run - Dev mode**:
+```bash
+# Build
+docker build -f Dockerfile.dev -t tic-tac-toe:dev .
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+# Run
+docker run -p 3000:3000 -v $(pwd):/app -v /app/node_modules tic-tac-toe:dev
+```
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+**Build & Run - Production**:
+```bash
+# Build
+docker build -t tic-tac-toe:prod .
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+# Run
+docker run -p 8080:80 tic-tac-toe:prod
+```
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+## Project structure
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+```
+tic-tac-toe-app/
+├── public/                     # Static assets
+├── src/
+│   ├── components/           # React components
+│   │   ├── Game.js           # Main Container
+│   │   ├── GameBoard.js      # Game board
+│   │   ├── GameHeader.js     # Header
+│   │   ├── GameStatus.js     # Game state for remote connection
+│   │   ├── GamesHistory.js   # Games history
+│   │   ├── PlayerCard.js     # Player card
+│   │   ├── PlayerRegistration.js # Register form for players
+│   │   ├── PlayersInfo.js        # Player information
+│   │   ├── SessionStats.js       # Game sesion state
+│   │   └── GameStateDebug.js     # Game state dd
+│   ├── hooks/
+│   │   └── useGameLogic.js   # Custom hook
+│   ├── services/
+│   │   └── gameService.js    # Bussines Logic
+│   ├── App.js                
+│   ├── gameLogic.js          # Utils
+│   ├── store.js              # Global state (Jotai)
+│   ├── index.js              # Entry point
+│   └── styles.css            # Styles
+├── index.html                # main HTML
+├── vite.config.js            # Vite configuration
+├── Dockerfile                # Docker producction
+├── Dockerfile.dev            # Docker development
+├── compose.yml               # Docker orchestation
+├── nginx.conf                # Nginx configuration
+├── .dockerignore             # Docker ignore files
+├── package.json              # Dependencies and 3d party
+└── README.md                 # this fille.
+```
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+## Environment variables (optional)
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+Add a file `.env` at main path:
+
+```env
+VITE_API_URL=http://localhost:4000
+VITE_ENVIRONMENT=development
+```
+
+Inside the code, add:
+```javascript
+const apiUrl = import.meta.env.VITE_API_URL;
+```
+
+## Production deploy
+
+### Docker Hub
+
+```bash
+# Build
+docker build -t user-path/tic-tac-toe:latest .
+
+# Push
+docker push user-path/tic-tac-toe:latest
+
+# Pull and run in a server
+docker pull user-path/tic-tac-toe:latest
+docker run -p 80:80 user-path/tic-tac-toe:latest
+```
+
+## How to play
+
+1. Register Players: Enter a name and email for both players to start.
+2. First Turn: Player X (Host) always goes first.
+3. Magic Square Values: Every cell on the grid is assigned a unique number from the Magic Square.
+4. Win Condition: The first player to select three tiles that sum up to 15 wins the match.
+5. Draw Condition: If the board is full and no player has reached a sum of 15, the game ends in a draw.
+6. New Game: Use the "New Game" button to start a fresh match with the current players.
+7. Reset Players: Use "Change Players" to clear the session and register new participants.
 
 ## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+MIT
