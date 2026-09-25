@@ -32,3 +32,5 @@ Thumbs.db
 
 # Docker
 *.log
+Client-tic-tac-toe-react/
+Client-tic-tac-toe-vue/
