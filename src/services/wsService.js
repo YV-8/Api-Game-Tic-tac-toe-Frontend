@@ -1,21 +1,24 @@
 /**
  * WebSocket service that manages the connection to the game server
- * Keeps the socket instance in a module-level variable, following
- * the same functional pattern used across the services/ folder
+ * Keeps the socket instance in a module-level variable
  */
 
 let socket = null;
 
 const WS_URL = import.meta.env.VITE_WS_URL || 'ws://localhost:8000';
 
-// Opens the WebSocket connection and wires up basic event logging
+// Opens the WebSocket connection and wires up event handling
 // onMessage is called with the parsed payload for every message received
-export const connectWebSocket = (onMessage) => {
+// onOpen/onClose are called when the connection actually opens/closes
+export const connectWebSocket = ({ onMessage, onOpen, onClose } = {}) => {
   console.info('Connecting to WS server at', WS_URL);
   socket = new WebSocket(WS_URL);
 
   socket.onopen = () => {
     console.info('WS connection established');
+    if (onOpen) {
+      onOpen();
+    }
   };
 
   socket.onmessage = (event) => {
@@ -32,6 +35,9 @@ export const connectWebSocket = (onMessage) => {
   socket.onclose = () => {
     console.info('WS connection closed');
     socket = null;
+    if (onClose) {
+      onClose();
+    }
   };
 
   return socket;
