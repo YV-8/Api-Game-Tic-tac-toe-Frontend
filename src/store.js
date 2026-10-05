@@ -69,5 +69,11 @@ export const sessionStatsAtom = atom({
   draws: 0
 });
 
+// Connection state atom to track WS connection status in the UI
+export const wsConnectionAtom = atom({
+  isConnected: false,
+  lastMessage: null
+});
+
 // history atom to keep track of all completed games in the session
 export const gamesHistoryAtom = atom([]);
