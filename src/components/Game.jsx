@@ -21,7 +21,7 @@ function Game({
   hostSum,
   guestSum,
   currentPlayerName,
-  ishostTurn,
+  isHostTurn,
   sessionStats,
   gamesHistory,
   onCellClick,
@@ -35,7 +35,7 @@ function Game({
         <GameStatus
           matchResult={matchResult}
           currentPlayerName={currentPlayerName}
-          ishostTurn={ishostTurn}
+          isHostTurn={isHostTurn}
           hostPlayer={players.hostPlayer}
           guestPlayer={players.guestPlayer}
         />

@@ -1,65 +1,63 @@
-/**
- * WebSocket service that manages the connection to the game server
- * Keeps the socket instance in a module-level variable
- */
+import { getToken } from './authService.js';
 
 let socket = null;
+let currentHandlers = {};
+const WS_URL = import.meta.env.VITE_WS_URL || 'ws://localhost:5000/ws';
 
-const WS_URL = import.meta.env.VITE_WS_URL || 'ws://localhost:8000';
-
-// Opens the WebSocket connection and wires up event handling
-// onMessage is called with the parsed payload for every message received
-// onOpen/onClose are called when the connection actually opens/closes
 export const connectWebSocket = ({ onMessage, onOpen, onClose } = {}) => {
-  console.info('Connecting to WS server at', WS_URL);
-  socket = new WebSocket(WS_URL);
+  if (socket && (socket.readyState === WebSocket.OPEN ||
+                 socket.readyState === WebSocket.CONNECTING)) {
+    console.info('[WS] Reutilizando conexión existente');
+    currentHandlers = { onMessage, onOpen, onClose };
+    return socket;
+  }
 
-  socket.onopen = () => {
-    console.info('WS connection established');
-    if (onOpen) {
-      onOpen();
+  const token = getToken();
+  if (!token) {
+    console.warn('[WS] Sin token, no se puede conectar');
+    return null;
+  }
+
+  const url = `${WS_URL}?token=${encodeURIComponent(token)}`;
+  console.info('[WS] Conectando a', url);
+  currentHandlers = { onMessage, onOpen, onClose };
+
+  const newSocket = new WebSocket(url);
+  socket = newSocket;
+
+  newSocket.onopen = () => {
+    console.info('[WS] Conexión establecida');
+    currentHandlers.onOpen?.();
+  };
+  newSocket.onmessage = (event) => {
+    try {
+      const data = JSON.parse(event.data);
+      console.info('[WS] Mensaje recibido:', data);
+      currentHandlers.onMessage?.(data);
+    } catch {
+      console.warn('[WS] Mensaje no es JSON:', event.data);
     }
   };
-
-  socket.onmessage = (event) => {
-    console.info('WS message received:', event.data);
-    if (onMessage) {
-      onMessage(event.data);
-    }
+  newSocket.onerror = (err) => console.error('[WS] Error:', err);
+  newSocket.onclose = () => {
+    console.info('[WS] Conexión cerrada');
+    if (socket === newSocket) socket = null;
+    currentHandlers.onClose?.();
   };
 
-  socket.onerror = (error) => {
-    console.info('WS connection error:', error);
-  };
-
-  socket.onclose = () => {
-    console.info('WS connection closed');
-    socket = null;
-    if (onClose) {
-      onClose();
-    }
-  };
-
-  return socket;
+  return newSocket;
 };
 
-// Sends a message through the open WebSocket connection
 export const sendMessage = (data) => {
   if (!socket || socket.readyState !== WebSocket.OPEN) {
-    console.info('Cannot send message, WS is not connected');
+    console.warn('[WS] No se puede enviar, no conectado');
     return;
   }
-  socket.send(data);
+  socket.send(typeof data === 'string' ? data : JSON.stringify(data));
 };
 
-// Closes the WebSocket connection if it's open
 export const closeWebSocket = () => {
-  if (socket) {
+  if (socket && socket.readyState === WebSocket.OPEN) {
     socket.close();
   }
-};
-
-// Returns whether the WebSocket connection is currently open
-export const isWebSocketConnected = () => {
-  return socket !== null && socket.readyState === WebSocket.OPEN;
 };

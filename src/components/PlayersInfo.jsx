@@ -18,7 +18,7 @@ function PlayersInfo({
       <PlayerCard
         player={hostPlayer}
         icon="X"
-        iconClasss="player-icon-host"
+        iconClass="player-icon-host"
         moves={hostPlayerMoves}
         sum={hostSum}
         label="Host Player"

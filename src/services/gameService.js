@@ -57,7 +57,7 @@ export const processMove = (position, gameState, players) => {
     currentPositions: {
       hostPlayerMoves: newHostMovements,
       guestPlayerMoves: newGuestMovements,
-      turnPlayerId: nextPlayerId,
+      playerTurnId: nextPlayerId,
       winningLine: newWinningLine
     },
     matchResult: newResult,
@@ -72,7 +72,7 @@ export const initializeGame = (players) => {
     currentPositions: {
       hostPlayerMoves: [],
       guestPlayerMoves: [],
-      turnPlayerId: players.hostPlayer.id,
+      playerTurnId: players.hostPlayer.id,
       winningLine: []
     },
     matchResult: null,

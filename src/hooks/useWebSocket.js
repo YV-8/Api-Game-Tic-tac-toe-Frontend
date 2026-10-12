@@ -1,26 +1,20 @@
 import { useAtom } from 'jotai';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { wsConnectionAtom } from '../store.js';
 import * as wsService from '../services/wsService.js';
 
-/**
- * Custom hook to handle the WebSocket connection lifecycle
- * Connects on mount, closes on unmount, and keeps connection
- * state and last received message in sync with global state
- */
-export const useWebSocket = () => {
+export const useWebSocket = (handlers = {}) => {
   const [wsConnection, setWsConnection] = useAtom(wsConnectionAtom);
+  const handlersRef = useRef(handlers);
+  handlersRef.current = handlers;
 
   useEffect(() => {
     wsService.connectWebSocket({
+      onOpen: () => setWsConnection((prev) => ({ ...prev, isConnected: true })),
+      onClose: () => setWsConnection((prev) => ({ ...prev, isConnected: false })),
       onMessage: (data) => {
         setWsConnection((prev) => ({ ...prev, lastMessage: data }));
-      },
-      onOpen: () => {
-        setWsConnection((prev) => ({ ...prev, isConnected: true }));
-      },
-      onClose: () => {
-        setWsConnection((prev) => ({ ...prev, isConnected: false }));
+        handlersRef.current.onMessage?.(data);
       }
     });
 
@@ -29,12 +23,7 @@ export const useWebSocket = () => {
     };
   }, []);
 
-  const sendMessage = (data) => {
-    wsService.sendMessage(data);
-  };
+  const sendMessage = (data) => wsService.sendMessage(data);
 
-  return {
-    wsConnection,
-    sendMessage
-  };
+  return { wsConnection, sendMessage };
 };
