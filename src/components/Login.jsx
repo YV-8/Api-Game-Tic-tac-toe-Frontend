@@ -10,15 +10,6 @@ function Login({ onLogin }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-
-    // Validación estricta de email (debe contener @ y dominio como .com)
-    const emailRegex = /^[^@\s]+@[^@\s]+\.(com|net|org|edu|gov|mil|io|es|ar|co|cl|uy|mx|pe|info|biz|[a-zA-Z]{2,})$/i;
-    if (!emailRegex.test(form.email.trim())) {
-      setError('El email debe contener un "@" y un dominio válido como .com (ej: usuario@gmail.com).');
-      return;
-    }
-
-    // Validación de límites seguros (BCrypt max 72 bytes)
     if (form.password.length < 6 || form.password.length > 72) {
       setError('La contraseña debe tener entre 6 y 72 caracteres (límite de seguridad).');
       return;
