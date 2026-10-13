@@ -31,31 +31,33 @@ export const useGameLogic = () => {
     ),
     [currentPositions.hostPlayerMoves, currentPositions.guestPlayerMoves]
   );
-  
+
   const hostSum = gameService.calculateSum(currentPositions.hostPlayerMoves);
   const guestSum = gameService.calculateSum(currentPositions.guestPlayerMoves);
-  
-  const currentPlayerName = currentPositions.turnPlayerId === players.hostPlayer?.id
-    ? players.hostPlayer?.name 
+
+  const currentTurnId = currentPositions.playerTurnId || currentPositions.turnPlayerId || players.hostPlayer?.id;
+  const currentOrderPlay = currentPositions.orderPlay || 1;
+
+  const isHostTurn = currentOrderPlay === 1;
+  const currentPlayerName = isHostTurn
+    ? players.hostPlayer?.name
     : players.guestPlayer?.name;
 
-  const isHostTurn = currentPositions.turnPlayerId === players.hostPlayer?.id;
-  console.info(isHostTurn);
   /**
    * Register players and initialize game state
    */
-  const handlePlayersRegistered = (registeredPlayers) => {    
+  const handlePlayersRegistered = (registeredPlayers) => {
     const playersWithIds = {
       hostPlayer: {
         ...registeredPlayers.hostPlayer,
-        id: generatePlayerId(registeredPlayers.hostPlayer.email)
+        id: registeredPlayers.hostPlayer.id || generatePlayerId(registeredPlayers.hostPlayer.email)
       },
       guestPlayer: {
         ...registeredPlayers.guestPlayer,
-        id: generatePlayerId(registeredPlayers.guestPlayer.email)
+        id: registeredPlayers.guestPlayer.id || generatePlayerId(registeredPlayers.guestPlayer.email)
       }
     };
-    
+
     setPlayers(playersWithIds);
     const newGameState = gameService.initializeGame(playersWithIds);
     setGameState(newGameState);
@@ -64,20 +66,25 @@ export const useGameLogic = () => {
   /**
    * Click handler for when a cell is clicked
    */
-  const handleClick = (position) => {    
-    if (board[position] || matchResult) return;
-    
-    const newGameState = gameService.processMove(position, gameState, players);
-    setGameState(newGameState);
+  const handleClick = (position, forcedOrder = null) => {
+    if (board[position] || matchResult) return false;
+
+    let updatedState = null;
+    setGameState((prev) => {
+      updatedState = gameService.processMove(position, prev, players, forcedOrder);
+      return updatedState;
+    });
 
     // if the game has ended, record the game and update stats
-    if (newGameState.matchResult) {      
-      const gameRecord = gameService.createGameRecord(newGameState, players);
-      setGamesHistory([gameRecord, ...gamesHistory]);
-      
-      const newStats = gameService.updateStats(sessionStats, newGameState.matchResult, players);
-      setSessionStats(newStats);
+    if (updatedState && updatedState.matchResult) {
+      const gameRecord = gameService.createGameRecord(updatedState, players);
+      setGamesHistory((prev) => [gameRecord, ...prev]);
+
+      setSessionStats((prev) =>
+        gameService.updateStats(prev, updatedState.matchResult, players)
+      );
     }
+    return true;
   };
 
   /**
@@ -96,7 +103,7 @@ export const useGameLogic = () => {
     resetGame();
   };
 
-  return { 
+  return {
     gameState,
     players,
     sessionStats,
@@ -105,13 +112,14 @@ export const useGameLogic = () => {
     currentPositions,
     matchResult,
     id,
-    updateDate,   
-    
+    updateDate,
+
     hostSum,
     guestSum,
     currentPlayerName,
     isHostTurn,
-    
+    orderPlay: currentOrderPlay,
+
     // Functions to handle game logic
     handlePlayersRegistered,
     handleClick,

@@ -48,6 +48,7 @@ export const initialGameState = {
     hostPlayerMoves: [],
     guestPlayerMoves: [],
     playerTurnId: null,
+    orderPlay: 1,
     winningLine: []
   },
   matchResult: null,
