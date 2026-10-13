@@ -1,7 +1,7 @@
-import { 
-  checkWinnerWithMagicSquare, 
-  isBoardFull, 
-  generateGameId 
+import {
+  checkWinnerWithMagicSquare,
+  isBoardFull,
+  generateGameId
 } from '../gameLogic.js';
 import { getMagicValue } from '../store.js';
 
@@ -10,54 +10,66 @@ import { getMagicValue } from '../store.js';
  */
 
 // Process board move and determine game state changes
-export const processMove = (position, gameState, players) => {
-  console.info('Process movement on position:', position);
+export const processMove = (position, gameState, players, forcedOrder = null) => {
+  console.info('Process movement on position:', position, 'forcedOrder:', forcedOrder);
   const { currentPositions, id } = gameState;
-  const currentPlayerId = currentPositions.turnPlayerId;
   
+  // orderPlay: 1 para Host (X), 2 para Guest (O)
+  const currentOrder = forcedOrder || currentPositions.orderPlay || 1;
+  const isHost = currentOrder === 1;
+
   // Get the magic value for the clicked position
   const magicValue = getMagicValue(position);
 
-  // Is host or guest making the move?
-  const isHost = currentPlayerId === players.hostPlayer.id;
-  console.info(isHost);
-  
-  let newHostMovements = currentPositions.hostPlayerMoves;
-  let newGuestMovements = currentPositions.guestPlayerMoves;
+  let newHostMovements = currentPositions.hostPlayerMoves ? [...currentPositions.hostPlayerMoves] : [];
+  let newGuestMovements = currentPositions.guestPlayerMoves ? [...currentPositions.guestPlayerMoves] : [];
 
-  if (isHost) {
-    newHostMovements = [...newHostMovements, magicValue];
-  } else {
-    newGuestMovements = [...newGuestMovements, magicValue];
+  // Evitar duplicar jugada si la celda ya tiene ficha
+  if (newHostMovements.includes(magicValue) || newGuestMovements.includes(magicValue)) {
+    console.warn('Posición ya ocupada:', position, 'magicValue:', magicValue);
+    return gameState;
   }
 
-  // check if the current player has won with this move
-  const currentPlayerMovements = isHost 
-    ? newHostMovements 
+  if (isHost) {
+    newHostMovements.push(magicValue);
+  } else {
+    newGuestMovements.push(magicValue);
+  }
+
+  // Comprobar si el jugador actual ganó
+  const currentPlayerMovements = isHost
+    ? newHostMovements
     : newGuestMovements;
-  
+
   const winnerResult = checkWinnerWithMagicSquare(currentPlayerMovements);
 
   let newResult = null;
   let newWinningLine = [];
+  const currentPlayerId = isHost ? players.hostPlayer?.id : players.guestPlayer?.id;
 
-  if (winnerResult) {     
+  if (winnerResult) {
     newResult = currentPlayerId;
     newWinningLine = winnerResult.winningPositions;
-  } else if (isBoardFull(newHostMovements, newGuestMovements)) {    
+  } else if (isBoardFull(newHostMovements, newGuestMovements)) {
     newResult = 'draw';
   }
 
-  // Change turn to the other player if the game is not finished
+  // Alternar el orden entre los dos jugadores (1 -> 2 ó 2 -> 1)
+  const nextOrderPlay = (newResult || newResult === 'draw')
+    ? currentOrder
+    : (isHost ? 2 : 1);
+
   const nextPlayerId = (newResult || newResult === 'draw')
     ? currentPlayerId
-    : (isHost ? players.guestPlayer.id : players.hostPlayer.id);
+    : (isHost ? players.guestPlayer?.id : players.hostPlayer?.id);
 
   return {
     currentPositions: {
       hostPlayerMoves: newHostMovements,
       guestPlayerMoves: newGuestMovements,
+      orderPlay: nextOrderPlay,
       playerTurnId: nextPlayerId,
+      turnPlayerId: nextPlayerId,
       winningLine: newWinningLine
     },
     matchResult: newResult,
@@ -72,7 +84,9 @@ export const initializeGame = (players) => {
     currentPositions: {
       hostPlayerMoves: [],
       guestPlayerMoves: [],
-      playerTurnId: players.hostPlayer.id,
+      orderPlay: 1, // Siempre arranca el orden 1 (Host, 'X')
+      playerTurnId: players.hostPlayer?.id,
+      turnPlayerId: players.hostPlayer?.id,
       winningLine: []
     },
     matchResult: null,
@@ -81,7 +95,7 @@ export const initializeGame = (players) => {
   };
 };
 
-// Sum of moves for a player (used for display purposes)
+// Sum of moves for a player
 export const calculateSum = (moves) => {
   return moves.reduce((total, valor) => total + valor, 0);
 };
@@ -102,11 +116,11 @@ export const createGameRecord = (gameState, players) => {
   };
 };
 
-// update statistics based on the match result and players
+// the match result and players
 export const updateStats = (currentStats, matchResult, players) => {
   const hostWon = matchResult === players.hostPlayer.id;
   const guestWon = matchResult === players.guestPlayer.id;
-  
+
   return {
     gamesPlayed: currentStats.gamesPlayed + 1,
     hostPlayerWins: currentStats.hostPlayerWins + (hostWon ? 1 : 0),

@@ -1,4 +1,6 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:';
+const defaultApiUrl = isHttps ? 'https://localhost:5001' : 'http://localhost:5000';
+const API_URL = import.meta.env.VITE_API_URL || defaultApiUrl;
 
 export const register = async (name, email, password) => {
   const res = await fetch(`${API_URL}/api/users`, {
@@ -8,7 +10,8 @@ export const register = async (name, email, password) => {
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    throw new Error(err.message || 'Error al registrar');
+    const message = err.message || (err.errors ? Object.values(err.errors).flat().join('. ') : 'Error al registrar');
+    throw new Error(message);
   }
   return res.json();
 };
@@ -21,12 +24,37 @@ export const login = async (email, password) => {
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    throw new Error(err.message || 'Credenciales inválidas');
+    const message = err.message || (err.errors ? Object.values(err.errors).flat().join('. ') : 'Credenciales inválidas');
+    throw new Error(message);
   }
   const data = await res.json();
   localStorage.setItem('token', data.token);
   localStorage.setItem('user', JSON.stringify(data.user));
   return data;
+};
+
+export const createGameplay = async (hostPlayerId, guestPlayerId) => {
+  const res = await authFetch('/api/gameplays', {
+    method: 'POST',
+    body: JSON.stringify({
+      hostPlayer: hostPlayerId,
+      guestPlayer: guestPlayerId,
+      playerTurn: hostPlayerId,
+      orderPlay: 1,
+      currentPositions: JSON.stringify({
+        hostPlayerMoves: [],
+        guestPlayerMoves: [],
+        playerTurnId: hostPlayerId,
+        orderPlay: 1,
+        winningLine: []
+      })
+    })
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || 'Error al crear partida en el servidor');
+  }
+  return res.json();
 };
 
 export const getToken = () => localStorage.getItem('token');
