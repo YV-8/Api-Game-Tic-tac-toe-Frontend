@@ -22,20 +22,25 @@ function Game({
   guestSum,
   currentPlayerName,
   isHostTurn,
+  orderPlay,
+  myOrderPlay,
+  isMyTurn,
   sessionStats,
   gamesHistory,
   onCellClick,
   onResetGame,
-  onChangePlayers
+  onChangePlayers,
+  onBackToMenu
 }) {
   return (
     <div className="container">
       <div className="game-card">
-        <GameHeader onChangePlayers={onChangePlayers} />        
+        <GameHeader onChangePlayers={onChangePlayers} onBackToMenu={onBackToMenu || onChangePlayers} />        
         <GameStatus
           matchResult={matchResult}
           currentPlayerName={currentPlayerName}
           isHostTurn={isHostTurn}
+          orderPlay={orderPlay}
           hostPlayer={players.hostPlayer}
           guestPlayer={players.guestPlayer}
         />
@@ -44,6 +49,7 @@ function Game({
           board={board}
           winningLine={currentPositions.winningLine}
           matchResult={matchResult}
+          isMyTurn={isMyTurn}
           onCellClick={onCellClick}
         />
 
@@ -58,6 +64,8 @@ function Game({
           guestPlayerMoves={currentPositions.guestPlayerMoves}
           hostSum={hostSum}
           guestSum={guestSum}
+          orderPlay={orderPlay}
+          myOrderPlay={myOrderPlay}
         />
 
         <SessionStats

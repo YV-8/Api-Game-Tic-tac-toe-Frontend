@@ -10,6 +10,20 @@ function Login({ onLogin }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
+    // Validación estricta de email (debe contener @ y dominio como .com)
+    const emailRegex = /^[^@\s]+@[^@\s]+\.(com|net|org|edu|gov|mil|io|es|ar|co|cl|uy|mx|pe|info|biz|[a-zA-Z]{2,})$/i;
+    if (!emailRegex.test(form.email.trim())) {
+      setError('El email debe contener un "@" y un dominio válido como .com (ej: usuario@gmail.com).');
+      return;
+    }
+
+    // Validación de límites seguros (BCrypt max 72 bytes)
+    if (form.password.length < 6 || form.password.length > 72) {
+      setError('La contraseña debe tener entre 6 y 72 caracteres (límite de seguridad).');
+      return;
+    }
+
     setLoading(true);
     try {
       if (mode === 'register') {
@@ -46,6 +60,7 @@ function Login({ onLogin }) {
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 required
+                maxLength={50}
               />
             </div>
           )}
@@ -65,12 +80,16 @@ function Login({ onLogin }) {
             <label>Contraseña</label>
             <input
               type="password"
-              placeholder="Mínimo 6 caracteres"
+              placeholder="Entre 6 y 72 caracteres"
               value={form.password}
               onChange={(e) => setForm({ ...form, password: e.target.value })}
               required
               minLength={6}
+              maxLength={72}
             />
+            <small style={{ display: 'block', marginTop: '0.35rem', fontSize: '0.8rem', color: '#6b7280' }}>
+              Límite de seguridad: 6 a 72 caracteres ({form.password.length}/72)
+            </small>
           </div>
 
           {error && <span className="error-message">{error}</span>}
