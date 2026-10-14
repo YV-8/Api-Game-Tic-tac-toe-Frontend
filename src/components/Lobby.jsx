@@ -5,11 +5,16 @@ import { getOnlineUsers, logout } from '../services/authService.js';
 function Lobby({ user, onLogout, onStartGame }) {
   const [onlineUsers, setOnlineUsers] = useState([]); // [{id, name}]
   const [selectedOpponent, setSelectedOpponent] = useState(null);
+  const [incomingInvite, setIncomingInvite] = useState(null);
+  const [loadingInvite, setLoadingInvite] = useState(false);
 
   const { sendMessage } = useWebSocket({
     onMessage: (data) => {
       if (data.type === 'online_users') {
         setOnlineUsers(data.users || []);
+      }
+      if (data.type === 'game_invitation') {
+        setIncomingInvite(data);
       }
     }
   });
@@ -18,11 +23,40 @@ function Lobby({ user, onLogout, onStartGame }) {
     getOnlineUsers().then(setOnlineUsers).catch(console.error);
   }, []);
 
-  const handleRefresh = () => sendMessage({ type: 'request_online_users' });
+  const handleRefresh = () => sendMessage({ type: 'list_users' });
 
-  const handleInvite = () => {
+  const handleInvite = async () => {
     if (!selectedOpponent) return;
-    console.info('TODO Fase 2: invitar a', selectedOpponent);
+    const opponent = onlineUsers.find((u) => u.id === selectedOpponent);
+    try {
+      setLoadingInvite(true);
+      const newMatch = await createGameplay(user.id, selectedOpponent);
+      sendMessage({
+        type: 'invite_player',
+        targetUserId: selectedOpponent,
+        matchId: newMatch.id
+      });
+      onStartGame('online', {
+        host: user,
+        guest: opponent || { id: selectedOpponent, name: 'Oponent' },
+        matchId: newMatch.id
+      });
+    } catch (err) {
+      console.error(err);
+      alert(err.message || 'Error start the game');
+    } finally {
+      setLoadingInvite(false);
+    }
+  };
+
+  const handleAcceptInvite = () => {
+    if (!incomingInvite) return;
+    onStartGame('online', {
+      host: { id: incomingInvite.hostId, name: incomingInvite.hostName },
+      guest: user,
+      matchId: incomingInvite.matchId
+    });
+    setIncomingInvite(null);
   };
 
   // Excluirse a sí mismo
@@ -33,6 +67,38 @@ function Lobby({ user, onLogout, onStartGame }) {
       <div className="game-card">
         <h1>Lobby</h1>
         <p>Bienvenido, <strong>{user.name}</strong> ({user.email})</p>
+
+        {/* Notificación de invitación recibida */}
+        {incomingInvite && (
+          <div style={{
+            background: 'rgba(59, 130, 246, 0.2)',
+            border: '1px solid #3375dfa7',
+            borderRadius: '8px',
+            padding: '1rem',
+            marginBottom: '1rem',
+            textAlign: 'center'
+          }}>
+            <p style={{ margin: '0 0 0.5rem 0', fontWeight: 'bold' }}>
+              {incomingInvite.hostName} invite you play tic tac toe, do you accept?
+            </p>
+            <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
+              <button
+                className="start-game-button"
+                style={{ padding: '0.4rem 1rem', width: 'auto' }}
+                onClick={handleAcceptInvite}
+              >
+                Aceptar y Jugar
+              </button>
+              <button
+                className="reset-button"
+                style={{ padding: '0.4rem 1rem' }}
+                onClick={() => setIncomingInvite(null)}
+              >
+                Rechazar
+              </button>
+            </div>
+          </div>
+        )}
 
         <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
           <button onClick={handleRefresh} className="reset-button">
@@ -67,10 +133,10 @@ function Lobby({ user, onLogout, onStartGame }) {
 
         <button
           className="start-game-button"
-          disabled={!selectedOpponent}
+          disabled={!selectedOpponent || loadingInvite}
           onClick={handleInvite}
         >
-          Invitar a jugar
+          {loadingInvite ? 'Creating game...' : 'Invite to play'}
         </button>
 
         <button

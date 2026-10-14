@@ -11,15 +11,16 @@ export const useWebSocket = (handlers = {}) => {
   useEffect(() => {
     wsService.connectWebSocket({
       onOpen: () => setWsConnection((prev) => ({ ...prev, isConnected: true })),
-      onClose: () => setWsConnection((prev) => ({ ...prev, isConnected: false })),
-      onMessage: (data) => {
-        setWsConnection((prev) => ({ ...prev, lastMessage: data }));
-        handlersRef.current.onMessage?.(data);
-      }
+      onClose: () => setWsConnection((prev) => ({ ...prev, isConnected: false }))
+    });
+
+    const unsubscribe = wsService.addMessageListener((data) => {
+      setWsConnection((prev) => ({ ...prev, lastMessage: data }));
+      handlersRef.current.onMessage?.(data);
     });
 
     return () => {
-      wsService.closeWebSocket();
+      unsubscribe();
     };
   }, []);
 

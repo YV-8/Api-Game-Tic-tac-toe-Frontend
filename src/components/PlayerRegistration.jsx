@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { validatePlayer } from '../gameLogic.js';
 
-function PlayerRegistration({ onPlayersRegistered }) {
+function PlayerRegistration({ onPlayersRegistered, onBackToMenu }) {
   const [host, setHost] = useState({ name: '', email: '' });
   const [guest, setGuest] = useState({ name: '', email: '' });
   const [errors, setErrors] = useState({ host: {}, guest: {} });
@@ -18,7 +18,7 @@ function PlayerRegistration({ onPlayersRegistered }) {
       });
       return;
     }
-      
+
     if (host.email.toLowerCase() === guest.email.toLowerCase()) {
       setErrors({
         host: {},
@@ -26,7 +26,7 @@ function PlayerRegistration({ onPlayersRegistered }) {
       });
       return;
     }
-  
+
     onPlayersRegistered({
       hostPlayer: host,
       guestPlayer: guest
@@ -48,7 +48,7 @@ function PlayerRegistration({ onPlayersRegistered }) {
               <span className="player-badge player-badge-x">X</span>
               Host Player
             </h2>
-            
+
             <div className="form-group">
               <label htmlFor="host-name">Name</label>
               <input
@@ -86,7 +86,7 @@ function PlayerRegistration({ onPlayersRegistered }) {
               <span className="player-badge player-badge-o">O</span>
               Guest Player
             </h2>
-            
+
             <div className="form-group">
               <label htmlFor="guest-name">Name</label>
               <input
@@ -121,7 +121,17 @@ function PlayerRegistration({ onPlayersRegistered }) {
           <button type="submit" className="start-game-button">
             Start Game
           </button>
-        </form>        
+          {onBackToMenu && (
+            <button
+              type="button"
+              onClick={onBackToMenu}
+              className="reset-button"
+              style={{ marginTop: '0.75rem', width: '100%' }}
+            >
+              Volver al Menú
+            </button>
+          )}
+        </form>
       </div>
     </div>
   );
