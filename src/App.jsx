@@ -31,7 +31,8 @@ function App() {
     resetGame,
     changePlayers
   } = useGameLogic();
-  const myOrderPlay = screen === 'online' ? (onlineData?.isHost ? 1 : 2) : null;
+  const isHost = onlineData ? (onlineData.isHost !== undefined ? onlineData.isHost : onlineData.host?.id === user?.id) : false;
+  const myOrderPlay = screen === 'online' ? (isHost ? 1 : 2) : null;
   const currentOrderPlay = currentPositions.orderPlay || 1;
   const isMyTurn = screen === 'online' ? currentOrderPlay === myOrderPlay : true;
 
@@ -148,6 +149,7 @@ function App() {
         isHostTurn={isHostTurn}
         orderPlay={currentOrderPlay}
         myOrderPlay={myOrderPlay}
+        isMyTurn={isMyTurn}
         sessionStats={sessionStats}
         gamesHistory={gamesHistory}
         onCellClick={handleCellClick}
