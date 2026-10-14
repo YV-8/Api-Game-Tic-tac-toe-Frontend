@@ -1,3 +1,5 @@
+import { closeWebSocket } from './wsService.js';
+
 const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:';
 const defaultApiUrl = isHttps ? 'https://localhost:5001' : 'http://localhost:5000';
 const API_URL = import.meta.env.VITE_API_URL || defaultApiUrl;
@@ -64,6 +66,7 @@ export const getUser = () => {
 };
 
 export const logout = () => {
+  closeWebSocket();
   localStorage.removeItem('token');
   localStorage.removeItem('user');
 };
