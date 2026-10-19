@@ -14,7 +14,7 @@ body {
 
 .container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #9333ea 0%, #2563eb 100%);
+  background: #f7f3e9;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -37,7 +37,7 @@ body {
   font-weight: bold;
   text-align: center;
   margin-bottom: 5px;
-  background: linear-gradient(135deg, #9333ea 0%, #2563eb 100%);
+  background: #1e4d8c;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -64,7 +64,7 @@ body {
 .winner-message p {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #9333ea;
+  color: #1e4d8c;
 }
 
 .draw-message {
@@ -74,21 +74,21 @@ body {
 .draw-message p {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #2563eb;
+  color: #c2410c;
 }
 
 .turn-message {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #374151;
+  color: #1c2b3a;
 }
 
 .host-player {
-  color: #9333ea;
+  color: #1e4d8c;
 }
 
 .guest-player {
-  color: #2563eb;
+  color: #c2410c;
 }
 
 .board {
@@ -126,13 +126,13 @@ body {
 }
 
 .cell-host {
-  background: #f3e8ff;
-  color: #9333ea;
+  background: #dbe7f5;
+  color: #1e4d8c;
 }
 
 .cell-guest {
-  background: #dbeafe;
-  color: #2563eb;
+  background: #fbe3d6;
+  color: #c2410c;
 }
 
 .cell-empty {
@@ -163,7 +163,7 @@ body {
 
 .reset-button {
   width: 100%;
-  background: linear-gradient(135deg, #9333ea 0%, #2563eb 100%);
+  background: #1e4d8c;
   color: white;
   font-weight: bold;
   font-size: 1.125rem;
@@ -172,12 +172,12 @@ body {
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(147, 51, 234, 0.3);
+  box-shadow: 0 4px 12px rgba(30, 77, 140, 0.3);
 }
 
 .reset-button:hover {
   transform: scale(1.05);
-  box-shadow: 0 6px 16px rgba(147, 51, 234, 0.4);
+  box-shadow: 0 6px 16px rgba(30, 77, 140, 0.4);
 }
 
 .reset-button:active {
@@ -212,13 +212,13 @@ body {
 }
 
 .player-icon-host {
-  background: #f3e8ff;
-  color: #9333ea;
+  background: #dbe7f5;
+  color: #1e4d8c;
 }
 
 .player-icon-guest {
-  background: #dbeafe;
-  color: #2563eb;
+  background: #fbe3d6;
+  color: #c2410c;
 }
 
 .player-card p {
@@ -256,7 +256,7 @@ body {
 .stats-section h3 {
   font-size: 1.125rem;
   font-weight: bold;
-  color: #374151;
+  color: #1c2b3a;
   margin-bottom: 15px;
   text-align: center;
 }
@@ -286,15 +286,15 @@ body {
 .stat-value {
   font-size: 1.25rem;
   font-weight: bold;
-  color: #374151;
+  color: #1c2b3a;
 }
 
 .stat-value.host-player {
-  color: #9333ea;
+  color: #1e4d8c;
 }
 
 .stat-value.guest-player {
-  color: #2563eb;
+  color: #c2410c;
 }
 
 .reset-stats-button {
@@ -329,7 +329,7 @@ body {
 
 .game-info summary {
   font-weight: 600;
-  color: #374151;
+  color: #1c2b3a;
   padding: 10px;
   border-radius: 8px;
   transition: background 0.2s;
@@ -353,7 +353,7 @@ body {
 }
 
 .game-data strong {
-  color: #374151;
+  color: #1c2b3a;
 }
 
 .move-history {
@@ -428,7 +428,7 @@ body {
 .serialized-state strong {
   display: block;
   margin-bottom: 8px;
-  color: #374151;
+  color: #1c2b3a;
 }
 
 .serialized-state pre {
@@ -449,7 +449,7 @@ body {
 }
 
 .serialized-state pre::-webkit-scrollbar-track {
-  background: #374151;
+  background: #1c2b3a;
 }
 
 .serialized-state pre::-webkit-scrollbar-thumb {
@@ -550,7 +550,7 @@ body {
 /* Player Registration Styles */
 .registration-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #9333ea 0%, #2563eb 100%);
+  background: #f7f3e9;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -571,7 +571,7 @@ body {
   font-weight: bold;
   text-align: center;
   margin-bottom: 10px;
-  background: linear-gradient(135deg, #9333ea 0%, #2563eb 100%);
+  background: #1e4d8c;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -598,7 +598,7 @@ body {
 .player-section-title {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #374151;
+  color: #1c2b3a;
   margin-bottom: 20px;
   display: flex;
   align-items: center;
@@ -617,13 +617,13 @@ body {
 }
 
 .player-badge-x {
-  background: #f3e8ff;
-  color: #9333ea;
+  background: #dbe7f5;
+  color: #1e4d8c;
 }
 
 .player-badge-o {
-  background: #dbeafe;
-  color: #2563eb;
+  background: #fbe3d6;
+  color: #c2410c;
 }
 
 .form-group {
@@ -633,7 +633,7 @@ body {
 .form-group label {
   display: block;
   font-weight: 600;
-  color: #374151;
+  color: #1c2b3a;
   margin-bottom: 8px;
   font-size: 0.875rem;
 }
@@ -649,8 +649,8 @@ body {
 
 .form-group input:focus {
   outline: none;
-  border-color: #9333ea;
-  box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.1);
+  border-color: #1e4d8c;
+  box-shadow: 0 0 0 3px rgba(30, 77, 140, 0.1);
 }
 
 .form-group input.input-error {
@@ -666,7 +666,7 @@ body {
 
 .start-game-button {
   width: 100%;
-  background: linear-gradient(135deg, #9333ea 0%, #2563eb 100%);
+  background: #1e4d8c;
   color: white;
   font-weight: bold;
   font-size: 1.125rem;
@@ -675,12 +675,12 @@ body {
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(147, 51, 234, 0.3);
+  box-shadow: 0 4px 12px rgba(30, 77, 140, 0.3);
 }
 
 .start-game-button:hover {
   transform: scale(1.02);
-  box-shadow: 0 6px 16px rgba(147, 51, 234, 0.4);
+  box-shadow: 0 6px 16px rgba(30, 77, 140, 0.4);
 }
 
 .magic-square-info {
@@ -694,7 +694,7 @@ body {
 .magic-square-info h3 {
   font-size: 1rem;
   font-weight: 600;
-  color: #374151;
+  color: #1c2b3a;
   margin-bottom: 15px;
 }
 
@@ -749,7 +749,7 @@ body {
 
 .player-name {
   font-weight: 600;
-  color: #374151;
+  color: #1c2b3a;
   margin-bottom: 4px;
 }
 
@@ -773,7 +773,7 @@ body {
 
 .games-history-section summary {
   font-weight: 600;
-  color: #374151;
+  color: #1c2b3a;
   padding: 10px;
   border-radius: 8px;
   transition: background 0.2s;
@@ -794,7 +794,7 @@ body {
   padding: 15px;
   border-radius: 8px;
   margin-bottom: 10px;
-  border-left: 4px solid #9333ea;
+  border-left: 4px solid #1e4d8c;
 }
 
 .history-header {
@@ -806,7 +806,7 @@ body {
 
 .history-number {
   font-weight: bold;
-  color: #9333ea;
+  color: #1e4d8c;
 }
 
 .history-date {
@@ -816,7 +816,7 @@ body {
 
 .history-players {
   margin-bottom: 8px;
-  color: #374151;
+  color: #1c2b3a;
   font-size: 0.875rem;
 }
 
@@ -826,11 +826,11 @@ body {
 }
 
 .result-host {
-  color: #9333ea;
+  color: #1e4d8c;
 }
 
 .result-guest {
-  color: #2563eb;
+  color: #c2410c;
 }
 
 .result-draw {
